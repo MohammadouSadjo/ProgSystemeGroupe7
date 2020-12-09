@@ -1,0 +1,176 @@
+#------------------------------------------------------------
+#        Script MySQL.
+#------------------------------------------------------------
+
+
+#------------------------------------------------------------
+# Table: Commande
+#------------------------------------------------------------
+
+CREATE TABLE Commande(
+        ID     Int  Auto_increment  NOT NULL ,
+        Numero Int NOT NULL
+	,CONSTRAINT Commande_PK PRIMARY KEY (ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Table
+#------------------------------------------------------------
+
+CREATE TABLE Table(
+        ID          Int  Auto_increment  NOT NULL ,
+        Numero      Int NOT NULL ,
+        NbPersonne  Int NOT NULL ,
+        NbCommande  Int NOT NULL ,
+        ID_Commande Int NOT NULL
+	,CONSTRAINT Table_PK PRIMARY KEY (ID)
+
+	,CONSTRAINT Table_Commande_FK FOREIGN KEY (ID_Commande) REFERENCES Commande(ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: ZoneC
+#------------------------------------------------------------
+
+CREATE TABLE ZoneC(
+        ID             Int  Auto_increment  NOT NULL ,
+        Libelle        Varchar (50) NOT NULL ,
+        Quantite       Int NOT NULL ,
+        DateLivraison  Datetime NOT NULL ,
+        DatePeremption Datetime NOT NULL
+	,CONSTRAINT ZoneC_PK PRIMARY KEY (ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: ZoneF
+#------------------------------------------------------------
+
+CREATE TABLE ZoneF(
+        ID             Int  Auto_increment  NOT NULL ,
+        Libelle        Varchar (50) NOT NULL ,
+        Quantite       Int NOT NULL ,
+        DateLivraison  Datetime NOT NULL ,
+        DatePeremption Datetime NOT NULL
+	,CONSTRAINT ZoneF_PK PRIMARY KEY (ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: ZoneD
+#------------------------------------------------------------
+
+CREATE TABLE ZoneD(
+        ID            Int  Auto_increment  NOT NULL ,
+        Libelle       Varchar (50) NOT NULL ,
+        Quantite      Int NOT NULL ,
+        DateLivraison Datetime NOT NULL
+	,CONSTRAINT ZoneD_PK PRIMARY KEY (ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Ingredients
+#------------------------------------------------------------
+
+CREATE TABLE Ingredients(
+        ID       Int  Auto_increment  NOT NULL ,
+        Nom      Varchar (50) NOT NULL ,
+        Stock    Int NOT NULL ,
+        ID_ZoneD Int ,
+        ID_ZoneC Int ,
+        ID_ZoneF Int
+	,CONSTRAINT Ingredients_PK PRIMARY KEY (ID)
+
+	,CONSTRAINT Ingredients_ZoneD_FK FOREIGN KEY (ID_ZoneD) REFERENCES ZoneD(ID)
+	,CONSTRAINT Ingredients_ZoneC0_FK FOREIGN KEY (ID_ZoneC) REFERENCES ZoneC(ID)
+	,CONSTRAINT Ingredients_ZoneF1_FK FOREIGN KEY (ID_ZoneF) REFERENCES ZoneF(ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: TypeRecette
+#------------------------------------------------------------
+
+CREATE TABLE TypeRecette(
+        ID       Int  Auto_increment  NOT NULL ,
+        Intitule Varchar (50) NOT NULL
+	,CONSTRAINT TypeRecette_PK PRIMARY KEY (ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Recette
+#------------------------------------------------------------
+
+CREATE TABLE Recette(
+        ID             Int  Auto_increment  NOT NULL ,
+        Nom            Varchar (50) NOT NULL ,
+        Prix           Int NOT NULL ,
+        NbPersonnes    Int NOT NULL ,
+        TempsPrepa     Time NOT NULL ,
+        TempsCuisson   Time NOT NULL ,
+        TempsRepos     Time NOT NULL ,
+        ModeEmploi     Text NOT NULL ,
+        ID_TypeRecette Int NOT NULL
+	,CONSTRAINT Recette_PK PRIMARY KEY (ID)
+
+	,CONSTRAINT Recette_TypeRecette_FK FOREIGN KEY (ID_TypeRecette) REFERENCES TypeRecette(ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Materiel
+#------------------------------------------------------------
+
+CREATE TABLE Materiel(
+        ID         Int  Auto_increment  NOT NULL ,
+        Nom        Varchar (50) NOT NULL ,
+        ID_Recette Int
+	,CONSTRAINT Materiel_PK PRIMARY KEY (ID)
+
+	,CONSTRAINT Materiel_Recette_FK FOREIGN KEY (ID_Recette) REFERENCES Recette(ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: MaterielStock
+#------------------------------------------------------------
+
+CREATE TABLE MaterielStock(
+        ID       Int  Auto_increment  NOT NULL ,
+        Nom      Varchar (50) NOT NULL ,
+        Quantite Int NOT NULL
+	,CONSTRAINT MaterielStock_PK PRIMARY KEY (ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Posseder
+#------------------------------------------------------------
+
+CREATE TABLE Posseder(
+        ID         Int NOT NULL ,
+        ID_Recette Int NOT NULL
+	,CONSTRAINT Posseder_PK PRIMARY KEY (ID,ID_Recette)
+
+	,CONSTRAINT Posseder_Ingredients_FK FOREIGN KEY (ID) REFERENCES Ingredients(ID)
+	,CONSTRAINT Posseder_Recette0_FK FOREIGN KEY (ID_Recette) REFERENCES Recette(ID)
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: Concerner
+#------------------------------------------------------------
+
+CREATE TABLE Concerner(
+        ID         Int NOT NULL ,
+        ID_Recette Int NOT NULL
+	,CONSTRAINT Concerner_PK PRIMARY KEY (ID,ID_Recette)
+
+	,CONSTRAINT Concerner_Commande_FK FOREIGN KEY (ID) REFERENCES Commande(ID)
+	,CONSTRAINT Concerner_Recette0_FK FOREIGN KEY (ID_Recette) REFERENCES Recette(ID)
+)ENGINE=InnoDB;
+
